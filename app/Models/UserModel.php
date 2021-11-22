@@ -5,7 +5,7 @@ namespace App\Models;
 class UserModel extends \CodeIgniter\Model{
         protected $table = 'user';
 
-        protected $allowedFields = ['user_firstname','user_lastname','user_email','password'];
+        protected $allowedFields = ['user_firstname','user_lastname','user_email','password','activation_hash'];
 
         protected $returnType = 'App\Entities\User';
 
@@ -46,6 +46,21 @@ class UserModel extends \CodeIgniter\Model{
             unset($data['data']['password']);
 
             return $data;
+        }
+
+        public function activateByToken($token){
+            $token_hash = hash_hmac('sha256', $token, $_ENV['HASH_SECRET_KEY']);
+
+            $user=$this->where('activation_hash',$token_hash)
+                       ->first();
+
+           
+            if ($user !== null){
+                $user->activate();
+
+                $this->protect(false)
+                     ->save($user);
+            }
         }
 
 }

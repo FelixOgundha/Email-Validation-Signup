@@ -9,7 +9,7 @@ class AddingTables extends Migration
     public function up()
     {
         $this->forge->addField([
-            'user_id'          => [
+            'id'          => [
                 'type'           => 'INT',
                 'constraint'     => 5,
                 'unsigned'       => true,
